@@ -1,0 +1,29 @@
+extends layouts/main.pug
+
+block content
+    h1 👤 Lista de Passageiros Cadastrados
+
+    if passengers && passengers.length > 0
+        .stats
+            p Total de passageiros: 
+                strong #{totalPassengers}
+
+        .passengers-grid
+            each passenger in passengers
+                .passenger-card
+                    .passenger-avatar
+                        img(src="https://img.icons8.com/?size=100&id=7EiduifHuNQx&format=png&color=000000", alt="Passageiro")
+                    .passenger-info
+                        h3= passenger.nome
+                        p.email 📧 #{passenger.email}
+                        p.phone 📱 #{passenger.telefone}
+                        p.status 
+                            if passenger.status === 'ativo'
+                                span.status-active ✅ Ativo
+                            else
+                                span.status-inactive ⛔ Inativo
+                        .passenger-id 🆔 ID: #{passenger.id}
+    else
+        .empty-state
+            p Nenhum passageiro cadastrado ainda.
+            p Use a API POST /passengers para adicionar um novo passageiro!

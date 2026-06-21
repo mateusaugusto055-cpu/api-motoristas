@@ -1,0 +1,181 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    background: #2d3748;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fbbf24;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #fbbf24;
+}
+
+main {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+h1 {
+    color: white;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.stats {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.drivers-grid, .passengers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.driver-card, .passenger-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.driver-card:hover, .passenger-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.driver-avatar, .passenger-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.driver-avatar img, .passenger-avatar img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+}
+
+.driver-info, .passenger-info {
+    padding: 1.5rem;
+}
+
+.driver-info h3, .passenger-info h3 {
+    color: #2d3748;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #fbbf24;
+    display: inline-block;
+}
+
+.driver-info p, .passenger-info p {
+    margin: 0.5rem 0;
+    color: #4a5568;
+}
+
+.status-active {
+    color: #48bb78;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: #f56565;
+    font-weight: bold;
+}
+
+.driver-id, .passenger-id {
+    font-size: 0.8rem;
+    color: #a0aec0;
+    margin-top: 1rem;
+    text-align: right;
+}
+
+.empty-state {
+    background: white;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    color: #4a5568;
+}
+
+.empty-state p {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+footer {
+    background: #2d3748;
+    color: #a0aec0;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+footer a {
+    color: #fbbf24;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .drivers-grid, .passengers-grid {
+        grid-template-columns: 1fr;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+}

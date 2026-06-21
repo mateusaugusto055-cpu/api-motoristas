@@ -1,0 +1,30 @@
+extends layouts/main.pug
+
+block content
+    h1 🚗 Lista de Motoristas Cadastrados
+
+    if drivers && drivers.length > 0
+        .stats
+            p Total de motoristas: 
+                strong #{totalDrivers}
+
+        .drivers-grid
+            each driver in drivers
+                .driver-card
+                    .driver-avatar
+                        img(src="https://img.icons8.com/?size=100&id=ygSz0RqMjwhR&format=png&color=000000", alt="Motorista")
+                    .driver-info
+                        h3= driver.nome
+                        p.email 📧 #{driver.email}
+                        p.phone 📱 #{driver.telefone}
+                        p.car 🚘 #{driver.modelo} - #{driver.placa}
+                        p.status 
+                            if driver.status === 'ativo'
+                                span.status-active ✅ Ativo
+                            else
+                                span.status-inactive ⛔ Inativo
+                        .driver-id 🆔 ID: #{driver.id}
+    else
+        .empty-state
+            p Nenhum motorista cadastrado ainda.
+            p Use a API POST /drivers para adicionar um novo motorista!
