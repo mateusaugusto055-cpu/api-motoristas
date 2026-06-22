@@ -1,63 +1,58 @@
 import PassengerRepository from '../repositories/passenger.repository.js';
-import { PassengerResponseDTO, CreatePassengerDTO } from '../dtos/passenger.dto.js';
 
 class PassengerService {
     static async findAll() {
-        const passengers = await PassengerRepository.findAll();
-        return passengers.map(passenger => new PassengerResponseDTO(passenger));
+        return await PassengerRepository.findAll();
     }
 
     static async findById(id) {
-        const passenger = await PassengerRepository.findById(Number(id));
+        const passenger = await PassengerRepository.findById(id);
         if (!passenger) {
             const error = new Error('Passageiro não encontrado');
             error.statusCode = 404;
             throw error;
         }
-        return new PassengerResponseDTO(passenger);
+        return passenger;
     }
 
-    static async create(createPassengerData) {
-        const passengerDTO = new CreatePassengerDTO(createPassengerData);
-        
-        if (!passengerDTO.nome || passengerDTO.nome.trim().length < 3) {
-            const error = new Error('Nome deve ter pelo menos 3 caracteres');
-            error.statusCode = 400;
+    // ✅ NOVO MÉTODO: Buscar por email
+    static async findByEmail(email) {
+        const passenger = await PassengerRepository.findByEmail(email);
+        if (!passenger) {
+            const error = new Error('Passageiro não encontrado');
+            error.statusCode = 404;
             throw error;
         }
-        
-        const novoPassenger = await PassengerRepository.create(passengerDTO);
-        return new PassengerResponseDTO(novoPassenger);
+        return passenger;
+    }
+
+    static async create(passengerData) {
+        return await PassengerRepository.create(passengerData);
     }
 
     static async update(id, passengerData) {
-        const passengerDTO = new CreatePassengerDTO(passengerData);
-        const passengerAtualizado = await PassengerRepository.update(Number(id), passengerDTO);
-        
-        if (!passengerAtualizado) {
+        const updated = await PassengerRepository.update(id, passengerData);
+        if (!updated) {
             const error = new Error('Passageiro não encontrado');
             error.statusCode = 404;
             throw error;
         }
-        
-        return new PassengerResponseDTO(passengerAtualizado);
+        return updated;
     }
 
     static async patch(id, dadosParciais) {
-        const passengerAtualizado = await PassengerRepository.patch(Number(id), dadosParciais);
-        
-        if (!passengerAtualizado) {
+        const updated = await PassengerRepository.patch(id, dadosParciais);
+        if (!updated) {
             const error = new Error('Passageiro não encontrado');
             error.statusCode = 404;
             throw error;
         }
-        
-        return new PassengerResponseDTO(passengerAtualizado);
+        return updated;
     }
 
     static async delete(id) {
-        const deletado = await PassengerRepository.delete(Number(id));
-        if (!deletado) {
+        const deleted = await PassengerRepository.delete(id);
+        if (!deleted) {
             const error = new Error('Passageiro não encontrado');
             error.statusCode = 404;
             throw error;

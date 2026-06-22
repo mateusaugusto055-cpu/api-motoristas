@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import UserService from '../services/user.service.js';
+import bcrypt from 'bcryptjs';
 
-const SECRET_KEY = 'minha-chave-secreta-super-segura-2025';
+const SECRET_KEY = process.env.JWT_SECRET || 'minha-chave-secreta-super-segura-2025';
 
 class AuthController {
     static async login(req, res, next) {
@@ -22,8 +23,8 @@ class AuthController {
                 throw error;
             }
             
-            // Usa o método do Mongoose para comparar senha
-            const senhaValida = await user.comparePassword(senha);
+            // Comparar senha usando bcrypt diretamente
+            const senhaValida = await bcrypt.compare(senha, user.senha);
             
             if (!senhaValida) {
                 const error = new Error('Senha inválida');

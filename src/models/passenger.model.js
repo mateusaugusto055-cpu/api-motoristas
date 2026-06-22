@@ -17,12 +17,14 @@ const passengerSchema = new mongoose.Schema({
     },
     telefone: {
         type: String,
-        required: [true, 'O telefone é obrigatório'],
-        trim: true
+        trim: true,
+        default: '',
+        required: false   // ← TORNA OPCIONAL
     },
     endereco: {
         type: String,
-        trim: true
+        trim: true,
+        default: ''
     },
     status: {
         type: String,

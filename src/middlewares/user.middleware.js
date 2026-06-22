@@ -10,7 +10,12 @@ export const setUserMiddleware = async (req, res, next) => {
         try {
             const decoded = jwt.verify(token, SECRET_KEY);
             const user = await UserService.findById(decoded.id);
-            res.locals.user = user ? { ...user.toObject(), role: user.role, tipo: user.tipo } : null;
+            res.locals.user = user ? { 
+                ...user.toObject(), 
+                id: user._id,  // ← USAR _id
+                role: user.role, 
+                tipo: user.tipo 
+            } : null;
         } catch {
             res.locals.user = null;
         }

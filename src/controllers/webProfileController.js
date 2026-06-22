@@ -1,19 +1,51 @@
 import UserService from '../services/user.service.js';
 import DriverService from '../services/driver.service.js';
 import PassengerService from '../services/passenger.service.js';
+import mongoose from 'mongoose';
 
 class WebProfileController {
-    // Ver perfil
     static async profilePage(req, res) {
         try {
-            const user = await UserService.findById(req.user.id);
+            const userId = req.user.id;
+            const userEmail = req.user.email || req.user.login; // Fallback para login
+            
+            console.log('🔍 ID do usuário:', userId);
+            console.log('🔍 Email do usuário:', userEmail);
+
+            // Buscar usuário
+            const user = await UserService.findById(userId);
+            
+            if (!user) {
+                return res.render('profile', { 
+                    title: 'Meu Perfil', 
+                    user: req.user, 
+                    driver: null,
+                    passenger: null,
+                    error: 'Usuário não encontrado', 
+                    success: null 
+                });
+            }
+
             let driver = null;
             let passenger = null;
             
+            // Buscar perfil correspondente
             if (user.tipo === 'motorista') {
-                driver = await DriverService.findById(req.user.id);
+                // Tenta buscar por ID primeiro, depois por email
+                driver = await DriverService.findById(userId);
+                if (!driver) {
+                    // Se não encontrar por ID, busca por email
+                    console.log('🔍 Motorista não encontrado por ID, buscando por email...');
+                    driver = await DriverService.findByEmail(userEmail);
+                }
             } else if (user.tipo === 'passageiro') {
-                passenger = await PassengerService.findById(req.user.id);
+                // Tenta buscar por ID primeiro, depois por email
+                passenger = await PassengerService.findById(userId);
+                if (!passenger) {
+                    // Se não encontrar por ID, busca por email
+                    console.log('🔍 Passageiro não encontrado por ID, buscando por email...');
+                    passenger = await PassengerService.findByEmail(userEmail);
+                }
             }
             
             res.render('profile', { 
@@ -31,23 +63,31 @@ class WebProfileController {
                 user: req.user, 
                 driver: null,
                 passenger: null,
-                error: 'Erro ao carregar perfil', 
+                error: 'Erro ao carregar perfil: ' + error.message, 
                 success: null 
             });
         }
     }
 
-    // Editar perfil - página
     static async editProfilePage(req, res) {
         try {
-            const user = await UserService.findById(req.user.id);
+            const userId = req.user.id;
+            const userEmail = req.user.email || req.user.login;
+            
+            const user = await UserService.findById(userId);
             let driver = null;
             let passenger = null;
             
-            if (user.tipo === 'motorista') {
-                driver = await DriverService.findById(req.user.id);
-            } else if (user.tipo === 'passageiro') {
-                passenger = await PassengerService.findById(req.user.id);
+            if (user && user.tipo === 'motorista') {
+                driver = await DriverService.findById(userId);
+                if (!driver) {
+                    driver = await DriverService.findByEmail(userEmail);
+                }
+            } else if (user && user.tipo === 'passageiro') {
+                passenger = await PassengerService.findById(userId);
+                if (!passenger) {
+                    passenger = await PassengerService.findByEmail(userEmail);
+                }
             }
             
             res.render('profile-edit', { 
@@ -64,24 +104,22 @@ class WebProfileController {
         }
     }
 
-    // Editar perfil - processar
     static async editProfile(req, res) {
         try {
+            const userId = req.user.id;
+            const userEmail = req.user.email || req.user.login;
             const { nome, email, senha, modelo, ano, placa, cnh } = req.body;
             const updateData = { nome, email };
             
-            // Se uma nova senha foi fornecida, criptografar
             if (senha && senha.length >= 6) {
                 const bcrypt = await import('bcryptjs');
                 const salt = await bcrypt.genSalt(10);
                 updateData.senha = await bcrypt.hash(senha, salt);
             }
 
-            // Atualizar usuário
-            await UserService.update(req.user.id, updateData);
+            await UserService.update(userId, updateData);
             
-            // Atualizar também o perfil correspondente
-            const user = await UserService.findById(req.user.id);
+            const user = await UserService.findById(userId);
             
             if (user.tipo === 'motorista') {
                 const driverUpdate = { nome, email };
@@ -90,20 +128,42 @@ class WebProfileController {
                 if (placa) driverUpdate.placa = placa.toUpperCase();
                 if (cnh) driverUpdate.cnh = cnh;
                 
-                await DriverService.update(req.user.id, driverUpdate);
+                // Tenta atualizar por ID, se não encontrar, cria novo
+                const updated = await DriverService.update(userId, driverUpdate);
+                if (!updated) {
+                    await DriverService.create({
+                        _id: userId,
+                        ...driverUpdate
+                    });
+                }
             } else if (user.tipo === 'passageiro') {
-                await PassengerService.update(req.user.id, { nome, email });
+                const passengerUpdate = { nome, email };
+                const updated = await PassengerService.update(userId, passengerUpdate);
+                if (!updated) {
+                    await PassengerService.create({
+                        _id: userId,
+                        ...passengerUpdate,
+                        telefone: '',
+                        endereco: '',
+                        status: 'ativo'
+                    });
+                }
             }
 
-            // Buscar dados atualizados
-            const updatedUser = await UserService.findById(req.user.id);
+            const updatedUser = await UserService.findById(userId);
             let driver = null;
             let passenger = null;
             
             if (updatedUser.tipo === 'motorista') {
-                driver = await DriverService.findById(req.user.id);
+                driver = await DriverService.findById(userId);
+                if (!driver) {
+                    driver = await DriverService.findByEmail(userEmail);
+                }
             } else if (updatedUser.tipo === 'passageiro') {
-                passenger = await PassengerService.findById(req.user.id);
+                passenger = await PassengerService.findById(userId);
+                if (!passenger) {
+                    passenger = await PassengerService.findByEmail(userEmail);
+                }
             }
 
             res.render('profile-edit', { 
@@ -122,8 +182,14 @@ class WebProfileController {
             
             if (user.tipo === 'motorista') {
                 driver = await DriverService.findById(req.user.id);
+                if (!driver) {
+                    driver = await DriverService.findByEmail(req.user.email || req.user.login);
+                }
             } else if (user.tipo === 'passageiro') {
                 passenger = await PassengerService.findById(req.user.id);
+                if (!passenger) {
+                    passenger = await PassengerService.findByEmail(req.user.email || req.user.login);
+                }
             }
             
             res.render('profile-edit', { 
@@ -137,19 +203,18 @@ class WebProfileController {
         }
     }
 
-    // Deletar conta
     static async deleteProfile(req, res) {
         try {
-            const user = await UserService.findById(req.user.id);
+            const userId = req.user.id;
+            const user = await UserService.findById(userId);
             
-            // Deletar perfil correspondente
             if (user.tipo === 'motorista') {
-                await DriverService.delete(req.user.id);
+                await DriverService.delete(userId);
             } else if (user.tipo === 'passageiro') {
-                await PassengerService.delete(req.user.id);
+                await PassengerService.delete(userId);
             }
             
-            await UserService.delete(req.user.id);
+            await UserService.delete(userId);
             
             res.clearCookie('token');
             res.redirect('/login?success=Conta deletada com sucesso');

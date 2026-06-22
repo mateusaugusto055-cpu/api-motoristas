@@ -57,22 +57,23 @@ block content
             | Já tem uma conta? 
             a(href="/login") Faça login aqui
 
-script.
-    function toggleMotoristaFields() {
-        const tipo = document.getElementById('tipo').value;
-        const fields = document.getElementById('motorista-fields');
-        if (tipo === 'motorista') {
-            fields.style.display = 'block';
-            // Tornar campos obrigatórios
-            document.getElementById('modelo').required = true;
-            document.getElementById('ano').required = true;
-            document.getElementById('placa').required = true;
-            document.getElementById('cnh').required = true;
-        } else {
-            fields.style.display = 'none';
-            document.getElementById('modelo').required = false;
-            document.getElementById('ano').required = false;
-            document.getElementById('placa').required = false;
-            document.getElementById('cnh').required = false;
+//- O script DEVE ficar aqui, FORA do block content
+block scripts
+    script.
+        function toggleMotoristaFields() {
+            const tipo = document.getElementById('tipo').value;
+            const fields = document.getElementById('motorista-fields');
+            if (tipo === 'motorista') {
+                fields.style.display = 'block';
+                document.getElementById('modelo').required = true;
+                document.getElementById('ano').required = true;
+                document.getElementById('placa').required = true;
+                document.getElementById('cnh').required = true;
+            } else {
+                fields.style.display = 'none';
+                document.getElementById('modelo').required = false;
+                document.getElementById('ano').required = false;
+                document.getElementById('placa').required = false;
+                document.getElementById('cnh').required = false;
+            }
         }
-    }

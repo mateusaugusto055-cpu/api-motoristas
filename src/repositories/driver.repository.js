@@ -1,4 +1,5 @@
 import Driver from '../models/driver.model.js';
+import mongoose from 'mongoose';
 
 class DriverRepository {
     static async findAll() {
@@ -6,7 +7,15 @@ class DriverRepository {
     }
 
     static async findById(id) {
-        return await Driver.findOne({ id: id }) || await Driver.findById(id);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+        return await Driver.findById(id);
+    }
+
+    // ✅ NOVO MÉTODO
+    static async findByEmail(email) {
+        return await Driver.findOne({ email: email });
     }
 
     static async create(driverData) {
@@ -14,23 +23,24 @@ class DriverRepository {
     }
 
     static async update(id, driverData) {
-        return await Driver.findOneAndUpdate(
-            { id: id },
-            driverData,
-            { new: true, upsert: false }
-        );
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+        return await Driver.findByIdAndUpdate(id, driverData, { new: true });
     }
 
     static async patch(id, dadosParciais) {
-        return await Driver.findOneAndUpdate(
-            { id: id },
-            dadosParciais,
-            { new: true }
-        );
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+        return await Driver.findByIdAndUpdate(id, dadosParciais, { new: true });
     }
 
     static async delete(id) {
-        return await Driver.findOneAndDelete({ id: id });
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+        return await Driver.findByIdAndDelete(id);
     }
 }
 

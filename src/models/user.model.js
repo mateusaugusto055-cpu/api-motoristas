@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
     nome: {
@@ -12,7 +11,8 @@ const userSchema = new mongoose.Schema({
         required: [true, 'O email é obrigatório'],
         unique: true,
         lowercase: true,
-        trim: true
+        trim: true,
+        match: [/^\S+@\S+\.\S+$/, 'Email inválido']
     },
     login: {
         type: String,
@@ -25,26 +25,28 @@ const userSchema = new mongoose.Schema({
         required: [true, 'A senha é obrigatória'],
         minlength: [6, 'A senha deve ter pelo menos 6 caracteres']
     },
+    tipo: {
+        type: String,
+        enum: ['motorista', 'passageiro'],
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['ativo', 'inativo'],
+        default: 'ativo'
+    },
     role: {
         type: String,
-        enum: ['admin', 'motorista', 'passageiro', 'user'],
+        enum: ['admin', 'user'],
         default: 'user'
     }
 }, {
     timestamps: true
 });
 
-// Middleware: criptografa a senha antes de salvar
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('senha')) return next();
-    const salt = await bcrypt.genSalt(10);
-    this.senha = await bcrypt.hash(this.senha, salt);
-    next();
-});
-
-// Método para validar senha
-userSchema.methods.comparePassword = async function(senhaDigitada) {
-    return await bcrypt.compare(senhaDigitada, this.senha);
+// MÉTODO para comparar senha
+userSchema.methods.comparePassword = function(senhaDigitada) {
+    return bcrypt.compare(senhaDigitada, this.senha);
 };
 
 export default mongoose.model('User', userSchema);

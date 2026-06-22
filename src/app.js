@@ -22,10 +22,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// --- IGNORAR FAVICON (SOLUÇÃO PARA O ERRO NaN) ---
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+// --- CONFIGURAÇÃO DO PUG ---
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// --- SERVIR ARQUIVOS ESTÁTICOS ---
 app.use(express.static(path.join(__dirname, '../public')));
+
+// --- MIDDLEWARES ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -37,24 +44,23 @@ app.use((req, res, next) => {
 
 await connectDB();
 
-// Middleware para disponibilizar usuário nas views
 app.use(setUserMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Rotas API (JSON)
+// --- ROTAS API ---
 app.use('/auth', authRoutes);
 app.use('/users', authMiddleware, userRoutes);
 app.use('/drivers', authMiddleware, driverRoutes);
 app.use('/passengers', authMiddleware, passengerRoutes);
 
-// Rotas Web (Páginas)
-app.use('/', webAuthRoutes);      // Login, Register, Logout
-app.use('/', webProfileRoutes);   // Profile, Edit, Delete
-app.use('/', webAdminRoutes);     // Admin Panel
-app.use('/', webRoutes);          // Views padrão
+// --- ROTAS WEB ---
+app.use('/', webAuthRoutes);
+app.use('/', webProfileRoutes);
+app.use('/', webAdminRoutes);
+app.use('/', webRoutes);
 
-// 404
+// --- 404 ---
 app.use((req, res) => {
     if (req.path.startsWith('/drivers') || req.path.startsWith('/passengers') || req.path.startsWith('/users')) {
         return res.status(404).json({ success: false, message: 'Rota não encontrada' });

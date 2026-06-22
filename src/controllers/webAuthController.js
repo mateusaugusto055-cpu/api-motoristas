@@ -2,20 +2,27 @@ import UserService from '../services/user.service.js';
 import DriverService from '../services/driver.service.js';
 import PassengerService from '../services/passenger.service.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const SECRET_KEY = process.env.JWT_SECRET || 'minha-chave-secreta-super-segura-2025';
 
 class WebAuthController {
-    // Página de login
     static async loginPage(req, res) {
         res.render('login', { title: 'Login', error: null, success: null });
     }
 
-    // Processar login
     static async login(req, res) {
         try {
             const { login, senha } = req.body;
             
+            if (!login || !senha) {
+                return res.render('login', { 
+                    title: 'Login', 
+                    error: 'Login e senha são obrigatórios', 
+                    success: null 
+                });
+            }
+
             const user = await UserService.findByLogin(login);
             if (!user) {
                 return res.render('login', { 
@@ -25,7 +32,7 @@ class WebAuthController {
                 });
             }
 
-            const senhaValida = await user.comparePassword(senha);
+            const senhaValida = await bcrypt.compare(senha, user.senha);
             if (!senhaValida) {
                 return res.render('login', { 
                     title: 'Login', 
@@ -34,7 +41,6 @@ class WebAuthController {
                 });
             }
 
-            // Gerar token JWT
             const token = jwt.sign(
                 { id: user._id, login: user.login, role: user.role, tipo: user.tipo },
                 SECRET_KEY,
@@ -44,25 +50,31 @@ class WebAuthController {
             res.cookie('token', token, { httpOnly: true, maxAge: 8 * 60 * 60 * 1000 });
             res.redirect('/profile');
         } catch (error) {
+            console.error('Erro no login:', error);
             res.render('login', { 
                 title: 'Login', 
-                error: 'Erro ao fazer login', 
+                error: 'Erro ao fazer login: ' + error.message, 
                 success: null 
             });
         }
     }
 
-    // Página de cadastro
     static async registerPage(req, res) {
         res.render('register', { title: 'Cadastro', error: null, success: null });
     }
 
-    // Processar cadastro
     static async register(req, res) {
         try {
             const { nome, email, login, senha, tipo, modelo, ano, placa, cnh } = req.body;
 
-            // Verificar se login já existe
+            if (!nome || !email || !login || !senha || !tipo) {
+                return res.render('register', { 
+                    title: 'Cadastro', 
+                    error: 'Todos os campos são obrigatórios', 
+                    success: null 
+                });
+            }
+
             const existingUser = await UserService.findByLogin(login);
             if (existingUser) {
                 return res.render('register', { 
@@ -83,11 +95,9 @@ class WebAuthController {
                 role: 'user'
             });
 
-            // Criar perfil correspondente
+            // Criar perfil correspondente usando o _id do usuário
             if (tipo === 'motorista') {
-                // Validar campos obrigatórios para motorista
                 if (!modelo || !ano || !placa || !cnh) {
-                    // Se faltar dados, deletar o usuário criado e mostrar erro
                     await UserService.delete(user._id);
                     return res.render('register', {
                         title: 'Cadastro',
@@ -97,7 +107,7 @@ class WebAuthController {
                 }
 
                 await DriverService.create({
-                    id: user._id,
+                    _id: user._id,  // ← USAR O _ID DO USUÁRIO
                     nome: user.nome,
                     email: user.email,
                     telefone: '',
@@ -110,7 +120,7 @@ class WebAuthController {
                 });
             } else if (tipo === 'passageiro') {
                 await PassengerService.create({
-                    id: user._id,
+                    _id: user._id,  // ← USAR O _ID DO USUÁRIO
                     nome: user.nome,
                     email: user.email,
                     telefone: '',
@@ -134,7 +144,6 @@ class WebAuthController {
         }
     }
 
-    // Logout
     static async logout(req, res) {
         res.clearCookie('token');
         res.redirect('/login');

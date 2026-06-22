@@ -56,9 +56,10 @@ block content
             a.btn.btn-secondary(href="/profile/edit") Editar Perfil
             button.btn.btn-danger(onclick="confirmDelete()") Deletar Conta
 
-script.
-    function confirmDelete() {
-        if (confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível!')) {
-            window.location.href = '/profile/delete';
+block scripts
+    script.
+        function confirmDelete() {
+            if (confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível!')) {
+                window.location.href = '/profile/delete';
+            }
         }
-    }
