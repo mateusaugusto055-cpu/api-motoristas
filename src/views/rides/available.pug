@@ -1,0 +1,54 @@
+extends ../layouts/main.pug
+
+block content
+    .ride-container
+        h1 🚗 Corridas Disponíveis
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        if user.tipo !== 'motorista'
+            .alert.alert-error
+                | ⚠️ Apenas motoristas podem ver corridas disponíveis.
+                br
+                a(href="/profile") Voltar para o perfil
+        else
+            if rides && rides.length > 0
+                .rides-list
+                    each ride in rides
+                        .ride-card.available
+                            .ride-header
+                                span.ride-status.solicitada ⏳ Disponível
+                                span.ride-date= new Date(ride.createdAt).toLocaleString('pt-BR')
+                            
+                            .ride-body
+                                .ride-route
+                                    p
+                                        strong 👤 Passageiro: 
+                                        //- ✅ SEM optional chaining - usar operador ternário
+                                        span= ride.passageiroId && ride.passageiroId.nome ? ride.passageiroId.nome : 'Não informado'
+                                    p
+                                        strong 📍 Origem: 
+                                        span= ride.origem
+                                    p
+                                        strong 🏁 Destino: 
+                                        span= ride.destino
+                                
+                                .ride-details
+                                    p
+                                        strong 📏 Distância: 
+                                        span= ride.distancia_km ? ride.distancia_km + ' km' : 'Não informada'
+                                    p
+                                        strong 💰 Valor estimado: 
+                                        span.valor-estimado R$ #{ride.valor_estimado ? ride.valor_estimado.toFixed(2) : '0,00'}
+                            
+                            .ride-actions
+                                form(action=`/rides/${ride._id}/aceitar`, method="POST")
+                                    button.btn.btn-success(type="submit") ✅ Aceitar Corrida
+            else
+                .empty-state
+                    p 🎉 Nenhuma corrida disponível no momento!
+                    p Volte mais tarde para ver novas solicitações.

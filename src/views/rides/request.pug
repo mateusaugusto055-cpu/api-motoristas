@@ -1,0 +1,47 @@
+extends ../layouts/main.pug
+
+block content
+    .ride-container
+        h1 🚗 Solicitar Corrida
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        if user.tipo !== 'passageiro'
+            .alert.alert-error
+                | ⚠️ Apenas passageiros podem solicitar corridas.
+                br
+                a(href="/profile") Voltar para o perfil
+        else
+            form(action="/rides/request", method="POST")
+                .form-group
+                    label(for="origem") 📍 Origem:
+                    input(type="text", name="origem", id="origem", required, placeholder="Digite o endereço de origem")
+                
+                .form-group
+                    label(for="destino") 🏁 Destino:
+                    input(type="text", name="destino", id="destino", required, placeholder="Digite o endereço de destino")
+                
+                .form-group
+                    label(for="distancia_km") 📏 Distância (km):
+                    input(type="number", name="distancia_km", id="distancia_km", required, min="0.5", step="0.1", placeholder="Ex: 5.2", oninput="calcularValor()")
+                
+                .form-group
+                    label 💰 Valor estimado:
+                    .valor-estimado
+                        span#valorDisplay R$ 0,00
+                    input(type="hidden", name="valor_estimado", id="valor_estimado", value="0")
+                
+                button.btn.btn-primary(type="submit") Solicitar Corrida
+
+block scripts
+    script.
+        function calcularValor() {
+            const distancia = parseFloat(document.getElementById('distancia_km').value) || 0;
+            const valor = distancia * 2; // R$ 2,00 por km
+            document.getElementById('valorDisplay').textContent = `R$ ${valor.toFixed(2)}`;
+            document.getElementById('valor_estimado').value = valor.toFixed(2);
+        }

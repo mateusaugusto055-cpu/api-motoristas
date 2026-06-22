@@ -1,0 +1,78 @@
+extends ../layouts/main.pug
+
+block content
+    .ride-container
+        h1 📋 Minhas Corridas (Motorista)
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        .ride-actions
+            a.btn.btn-primary(href="/rides/available") 🚗 Ver Corridas Disponíveis
+        
+        if rides && rides.length > 0
+            .rides-list
+                each ride in rides
+                    .ride-card(class=ride.status)
+                        .ride-header
+                            span.ride-status(class=ride.status)
+                                if ride.status === 'solicitada'
+                                    | ⏳ Disponível
+                                else if ride.status === 'aceita'
+                                    | ✅ Aceita - A caminho
+                                else if ride.status === 'em_andamento'
+                                    | 🚗 Em andamento
+                                else if ride.status === 'concluida'
+                                    | ✅ Concluída
+                                else if ride.status === 'cancelada'
+                                    | ❌ Cancelada
+                            span.ride-date= new Date(ride.createdAt).toLocaleString('pt-BR')
+                        
+                        .ride-body
+                            .ride-route
+                                //- ✅ AQUI É ONDE O CÓDIGO DEVE FICAR!
+                                p
+                                    strong 👤 Passageiro: 
+                                    span= ride.passageiro && ride.passageiro.nome ? ride.passageiro.nome : 'Não informado'
+                                p
+                                    strong 📍 Origem: 
+                                    span= ride.origem
+                                p
+                                    strong 🏁 Destino: 
+                                    span= ride.destino
+                            
+                            .ride-details
+                                p
+                                    strong 📏 Distância: 
+                                    span= ride.distancia_km ? ride.distancia_km + ' km' : 'Não informada'
+                                p
+                                    strong 💰 Valor: 
+                                    span= ride.valor_estimado ? 'R$ ' + ride.valor_estimado.toFixed(2) : 'A calcular'
+                                if ride.valor_final
+                                    p
+                                        strong 💰 Valor final: 
+                                        span.valor-final R$ #{ride.valor_final.toFixed(2)}
+                        
+                        .ride-actions
+                            if ride.status === 'aceita'
+                                form(action=`/rides/${ride._id}/iniciar`, method="POST", style="display: inline;")
+                                    button.btn.btn-success(type="submit") 🚗 Iniciar Corrida
+                            
+                            if ride.status === 'em_andamento'
+                                form(action=`/rides/${ride._id}/concluir`, method="POST", style="display: inline;")
+                                    input(type="hidden", name="valor_final", value=ride.valor_estimado || 0)
+                                    button.btn.btn-success(type="submit") ✅ Concluir Corrida
+                            
+                            if ride.status === 'solicitada' || ride.status === 'aceita'
+                                form(action=`/rides/${ride._id}/cancelar`, method="POST", style="display: inline;")
+                                    button.btn.btn-danger(type="submit") ❌ Cancelar
+                            
+                            if ride.status === 'concluida'
+                                a.btn.btn-secondary(href=`/rides/${ride._id}/avaliar`) ⭐ Avaliar Passageiro
+        else
+            .empty-state
+                p 😢 Você ainda não tem nenhuma corrida.
+                p Clique em "Ver Corridas Disponíveis" para encontrar passageiros!

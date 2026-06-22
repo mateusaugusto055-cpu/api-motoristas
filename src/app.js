@@ -16,6 +16,8 @@ import webRoutes from './routes/webRoutes.js';
 import { errorHandler } from './middlewares/errorMiddleware.js';
 import { authMiddleware } from './middlewares/auth.middleware.js';
 import { setUserMiddleware } from './middlewares/user.middleware.js';
+import rideRoutes from './routes/rideRoutes.js';
+import webRideRoutes from './routes/webRideRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,7 +45,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// ✅ MIDDLEWARE PARA CAPTURAR MENSAGENS DA URL (success/error)
+// Middleware para capturar mensagens da URL
 app.use((req, res, next) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const success = url.searchParams.get('success');
@@ -67,21 +69,38 @@ app.use(setUserMiddleware);
 // --- SWAGGER ---
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// --- ROTAS DA API (JSON) ---
+// ============================================================
+// ⚠️ ROTAS WEB - CADA UMA EM SEU PRÓPRIO PREFIXO
+// ============================================================
+
+// Rotas de autenticação (login, register, logout)
+app.use('/', webAuthRoutes);
+
+// Rotas de perfil (/profile, /profile/edit, /profile/delete)
+app.use('/', webProfileRoutes);
+
+// ✅ Rotas de ADMIN (prefixo /admin)
+app.use('/admin', webAdminRoutes);  // ← AGORA SEPARADO!
+
+// Rotas de visualização pública (/drivers-view, /passengers-view)
+app.use('/', webRoutes);
+
+// ✅ Rotas de CORRIDA (prefixo /rides)
+app.use('/', webRideRoutes);  // ← AGORA SEPARADO!
+
+// ============================================================
+// ⚠️ ROTAS DA API (JSON)
+// ============================================================
+
 app.use('/auth', authRoutes);
 app.use('/users', authMiddleware, userRoutes);
 app.use('/drivers', authMiddleware, driverRoutes);
 app.use('/passengers', authMiddleware, passengerRoutes);
-
-// --- ROTAS DA WEB (Páginas HTML) ---
-app.use('/', webAuthRoutes);
-app.use('/', webProfileRoutes);
-app.use('/', webAdminRoutes);
-app.use('/', webRoutes);
+app.use('/rides', authMiddleware, rideRoutes);
 
 // --- 404 ---
 app.use((req, res) => {
-    if (req.path.startsWith('/drivers') || req.path.startsWith('/passengers') || req.path.startsWith('/users')) {
+    if (req.path.startsWith('/drivers') || req.path.startsWith('/passengers') || req.path.startsWith('/users') || req.path.startsWith('/rides')) {
         return res.status(404).json({ success: false, message: 'Rota não encontrada' });
     }
     res.status(404).render('404', { title: 'Página não encontrada' });

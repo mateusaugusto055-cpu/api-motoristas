@@ -1,3 +1,7 @@
+/* =========================================================== */
+/*                     RESET E BASE                             */
+/* =========================================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -18,7 +22,10 @@ body {
     padding: 0 20px;
 }
 
-/* ===== HEADER / NAVEGAÇÃO ===== */
+/* =========================================================== */
+/*                     HEADER E NAVEGAÇÃO                       */
+/* =========================================================== */
+
 header {
     background: #2d3748;
     color: white;
@@ -58,7 +65,10 @@ nav {
     color: #fbbf24;
 }
 
-/* ===== MAIN ===== */
+/* =========================================================== */
+/*                       MAIN E TÍTULOS                        */
+/* =========================================================== */
+
 main {
     flex: 1;
     padding: 2rem 0;
@@ -79,7 +89,10 @@ h2 {
     text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 
-/* ===== STATS ===== */
+/* =========================================================== */
+/*                       STATS                                 */
+/* =========================================================== */
+
 .stats {
     background: rgba(255,255,255,0.2);
     backdrop-filter: blur(10px);
@@ -91,7 +104,10 @@ h2 {
     font-size: 1.1rem;
 }
 
-/* ===== CARDS (Motoristas / Passageiros) ===== */
+/* =========================================================== */
+/*                    CARDS (Motoristas/Passageiros)             */
+/* =========================================================== */
+
 .drivers-grid, .passengers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -158,7 +174,10 @@ h2 {
     text-align: right;
 }
 
-/* ===== EMPTY STATE ===== */
+/* =========================================================== */
+/*                      EMPTY STATE                            */
+/* =========================================================== */
+
 .empty-state {
     background: white;
     border-radius: 15px;
@@ -172,7 +191,10 @@ h2 {
     margin: 1rem 0;
 }
 
-/* ===== FOOTER ===== */
+/* =========================================================== */
+/*                       FOOTER                                */
+/* =========================================================== */
+
 footer {
     background: #2d3748;
     color: #a0aec0;
@@ -191,10 +213,9 @@ footer a:hover {
 }
 
 /* =========================================================== */
-/* ===== NOVOS ESTILOS PARA AUTENTICAÇÃO E PERFIS ===== */
+/*                  AUTENTICAÇÃO (Login/Register)               */
 /* =========================================================== */
 
-/* ----- Auth (Login / Register) ----- */
 .auth-container {
     max-width: 500px;
     margin: 2rem auto;
@@ -229,7 +250,10 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* ----- Formulários ----- */
+/* =========================================================== */
+/*                     FORMULÁRIOS                             */
+/* =========================================================== */
+
 .form-group {
     margin-bottom: 1.2rem;
 }
@@ -260,7 +284,10 @@ footer a:hover {
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
-/* ----- Alertas ----- */
+/* =========================================================== */
+/*                       ALERTAS                               */
+/* =========================================================== */
+
 .alert {
     padding: 0.8rem 1rem;
     border-radius: 8px;
@@ -280,7 +307,10 @@ footer a:hover {
     border: 1px solid #9ae6b4;
 }
 
-/* ----- Botões ----- */
+/* =========================================================== */
+/*                        BOTÕES                               */
+/* =========================================================== */
+
 .btn {
     display: inline-block;
     padding: 0.7rem 1.8rem;
@@ -344,7 +374,10 @@ footer a:hover {
     background: #dd6b20;
 }
 
-/* ----- Perfil (Profile) ----- */
+/* =========================================================== */
+/*                       PERFIL                                */
+/* =========================================================== */
+
 .profile-container {
     max-width: 800px;
     margin: 0 auto;
@@ -403,7 +436,10 @@ footer a:hover {
     text-align: center;
 }
 
-/* ----- Admin (Painel) ----- */
+/* =========================================================== */
+/*                       ADMIN (Painel)                        */
+/* =========================================================== */
+
 .admin-tabs {
     display: flex;
     gap: 0.8rem;
@@ -449,7 +485,10 @@ footer a:hover {
     display: block;
 }
 
-/* ----- Tabela Admin ----- */
+/* =========================================================== */
+/*                    TABELA ADMIN                             */
+/* =========================================================== */
+
 .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -484,7 +523,175 @@ footer a:hover {
     min-width: auto;
 }
 
-/* ----- Responsividade ----- */
+/* =========================================================== */
+/*                     RIDE STYLES                             */
+/* =========================================================== */
+
+.ride-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.ride-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.rides-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ride-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #a0aec0;
+}
+
+.ride-card.solicitada {
+    border-left-color: #ed8936;
+}
+
+.ride-card.aceita {
+    border-left-color: #48bb78;
+}
+
+.ride-card.em_andamento {
+    border-left-color: #4299e1;
+}
+
+.ride-card.concluida {
+    border-left-color: #38a169;
+}
+
+.ride-card.cancelada {
+    border-left-color: #f56565;
+    opacity: 0.7;
+}
+
+.ride-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.ride-status {
+    font-weight: bold;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.ride-status.solicitada {
+    background: #fef3c7;
+    color: #d69e2e;
+}
+
+.ride-status.aceita {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.ride-status.em_andamento {
+    background: #bee3f8;
+    color: #2b6cb0;
+}
+
+.ride-status.concluida {
+    background: #c6f6d5;
+    color: #276749;
+}
+
+.ride-status.cancelada {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.ride-date {
+    font-size: 0.85rem;
+    color: #a0aec0;
+}
+
+.ride-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.ride-body p {
+    margin: 0.25rem 0;
+}
+
+.ride-details {
+    text-align: right;
+}
+
+.valor-estimado {
+    color: #38a169;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.valor-final {
+    color: #2b6cb0;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.ride-actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ride-card .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+}
+
+.ride-card .btn.btn-success {
+    background: #48bb78;
+    color: white;
+}
+
+.ride-card .btn.btn-success:hover {
+    background: #38a169;
+}
+
+.ride-card .btn.btn-danger {
+    background: #f56565;
+    color: white;
+}
+
+.ride-card .btn.btn-danger:hover {
+    background: #e53e3e;
+}
+
+.valor-estimado-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2d3748;
+    background: #f7fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* =========================================================== */
+/*                    RESPONSIVIDADE                          */
+/* =========================================================== */
+
 @media (max-width: 768px) {
     .drivers-grid,
     .passengers-grid {
@@ -549,4 +756,38 @@ footer a:hover {
         text-align: center;
         font-size: 1.4rem;
     }
+
+    .ride-body {
+        grid-template-columns: 1fr;
+    }
+    .ride-details {
+        text-align: left;
+    }
+}
+
+/* =========================================================== */
+/*                    MOTORISTA INFO                            */
+/* =========================================================== */
+
+.motorista-info {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.motorista-info h4 {
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.motorista-info p {
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+}
+
+.motorista-info strong {
+    color: #4a5568;
 }

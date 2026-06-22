@@ -13,14 +13,18 @@ html(lang="pt-BR")
                     ul.nav-links
                         if user
                             li: a(href="/profile") Meu Perfil
+                            if user.tipo === 'passageiro'
+                                li: a(href="/rides/request") Solicitar Corrida
+                                li: a(href="/rides/passenger") Minhas Corridas
+                            if user.tipo === 'motorista'
+                                li: a(href="/rides/available") Corridas Disponíveis
+                                li: a(href="/rides/driver") Minhas Corridas
+                            if user.role === 'admin'
+                                li: a(href="/admin/users") Admin
                             li: a(href="/logout") Sair
                         else
                             li: a(href="/login") Login
                             li: a(href="/register") Cadastrar
-                        if user && user.role === 'admin'
-                            li: a(href="/admin/users") Admin
-                        li: a(href="/drivers-view") Motoristas
-                        li: a(href="/passengers-view") Passageiros
 
         main.container
             block content
@@ -28,6 +32,10 @@ html(lang="pt-BR")
         footer
             .container
                 p &copy; 2026 API Motoristas - Node.js, Express, MongoDB
+                p 
+                    | API disponível em: 
+                    a(href="/drivers") /drivers
+                    |  e 
+                    a(href="/passengers") /passengers
 
-        //- Bloco para scripts adicionais (será preenchido pelas páginas filhas)
         block scripts

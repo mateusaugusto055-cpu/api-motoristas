@@ -27,11 +27,6 @@ const driverSchema = new mongoose.Schema({
         trim: true,
         match: [/^\(\d{2}\)\s\d{4,5}-\d{4}$/, 'Formato inválido. Use (11) 99999-9999']
     },
-    cpf: {
-        type: String,
-        trim: true,
-        default: ''
-    },
     cnh: {
         type: String,
         trim: true,

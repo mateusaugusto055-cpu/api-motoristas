@@ -9,11 +9,11 @@ const router = Router();
 router.use(authMiddleware);
 router.use(authorize('admin'));
 
-// Página do painel admin
-router.get('/admin/users', WebAdminController.adminPage);
+// Página do painel admin (agora em /admin/users)
+router.get('/users', WebAdminController.adminPage);
 
-// ✅ ROTAS DE EXCLUSÃO
-router.post('/admin/delete/motorista/:id', WebAdminController.deleteDriver);
-router.post('/admin/delete/passageiro/:id', WebAdminController.deletePassenger);
+// Rotas de exclusão (agora em /admin/delete/...)
+router.post('/delete/motorista/:id', WebAdminController.deleteDriver);
+router.post('/delete/passageiro/:id', WebAdminController.deletePassenger);
 
 export default router;

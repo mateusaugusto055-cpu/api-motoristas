@@ -1,0 +1,83 @@
+extends ../layouts/main.pug
+
+block content
+    .ride-container
+        h1 📋 Minhas Corridas (Passageiro)
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        .ride-actions
+            a.btn.btn-primary(href="/rides/request") 🚗 Solicitar Nova Corrida
+        
+        if rides && rides.length > 0
+            .rides-list
+                each ride in rides
+                    .ride-card(class=ride.status)
+                        .ride-header
+                            span.ride-status(class=ride.status)
+                                if ride.status === 'solicitada'
+                                    | ⏳ Aguardando motorista
+                                else if ride.status === 'aceita'
+                                    | ✅ Motorista a caminho
+                                else if ride.status === 'em_andamento'
+                                    | 🚗 Em andamento
+                                else if ride.status === 'concluida'
+                                    | ✅ Concluída
+                                else if ride.status === 'cancelada'
+                                    | ❌ Cancelada
+                            span.ride-date= new Date(ride.createdAt).toLocaleString('pt-BR')
+                        
+                        .ride-body
+                            .ride-route
+                                p
+                                    strong 📍 Origem: 
+                                    span= ride.origem
+                                p
+                                    strong 🏁 Destino: 
+                                    span= ride.destino
+                            
+                            .ride-details
+                                p
+                                    strong 📏 Distância: 
+                                    span= ride.distancia_km ? ride.distancia_km + ' km' : 'Não informada'
+                                p
+                                    strong 💰 Valor: 
+                                    span= ride.valor_estimado ? 'R$ ' + ride.valor_estimado.toFixed(2) : 'A calcular'
+                                if ride.valor_final
+                                    p
+                                        strong 💰 Valor final: 
+                                        span.valor-final R$ #{ride.valor_final.toFixed(2)}
+                            
+                            //- ✅ MOSTRAR DADOS DO MOTORISTA (se houver)
+                            if ride.motorista && (ride.status === 'aceita' || ride.status === 'em_andamento' || ride.status === 'concluida')
+                                .motorista-info
+                                    h4 🚗 Dados do Motorista
+                                    p
+                                        strong 👤 Nome: 
+                                        span= ride.motorista.nome || 'Não informado'
+                                    p
+                                        strong 🚘 Modelo: 
+                                        span= ride.motorista.modelo || 'Não informado'
+                                    p
+                                        strong 🏷️ Placa: 
+                                        span= ride.motorista.placa || 'Não informado'
+                                    if ride.motorista.telefone
+                                        p
+                                            strong 📱 Telefone: 
+                                            span= ride.motorista.telefone
+                        
+                        .ride-actions
+                            if ride.status === 'solicitada' || ride.status === 'aceita'
+                                form(action=`/rides/${ride._id}/cancelar`, method="POST", style="display: inline;")
+                                    button.btn.btn-danger(type="submit") ❌ Cancelar
+                            
+                            if ride.status === 'concluida'
+                                a.btn.btn-secondary(href=`/rides/${ride._id}/avaliar`) ⭐ Avaliar Motorista
+        else
+            .empty-state
+                p 😢 Você ainda não tem nenhuma corrida.
+                p Clique em "Solicitar Nova Corrida" para começar!
