@@ -21,10 +21,10 @@ const router = Router();
  *             properties:
  *               login:
  *                 type: string
- *                 example: "admin"
+ *                 example: admin
  *               senha:
  *                 type: string
- *                 example: "admin123"
+ *                 example: admin123
  *     responses:
  *       200:
  *         description: Login realizado com sucesso
