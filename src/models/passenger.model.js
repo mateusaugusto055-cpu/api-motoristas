@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const passengerSchema = new mongoose.Schema({
+    usuarioId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        unique: true
+    },
     nome: {
         type: String,
         required: [true, 'O nome é obrigatório'],
@@ -18,8 +24,7 @@ const passengerSchema = new mongoose.Schema({
     telefone: {
         type: String,
         trim: true,
-        default: '',
-        required: false   // ← TORNA OPCIONAL
+        default: ''
     },
     endereco: {
         type: String,

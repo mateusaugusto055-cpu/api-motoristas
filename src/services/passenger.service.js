@@ -15,7 +15,17 @@ class PassengerService {
         return passenger;
     }
 
-    // ✅ NOVO MÉTODO: Buscar por email
+    // ✅ NOVO: Buscar pelo usuarioId
+    static async findByUsuarioId(usuarioId) {
+        const passenger = await PassengerRepository.findByUsuarioId(usuarioId);
+        if (!passenger) {
+            const error = new Error('Passageiro não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return passenger;
+    }
+
     static async findByEmail(email) {
         const passenger = await PassengerRepository.findByEmail(email);
         if (!passenger) {
@@ -40,6 +50,17 @@ class PassengerService {
         return updated;
     }
 
+    // ✅ NOVO: Atualizar pelo usuarioId
+    static async updateByUsuarioId(usuarioId, passengerData) {
+        const updated = await PassengerRepository.updateByUsuarioId(usuarioId, passengerData);
+        if (!updated) {
+            const error = new Error('Passageiro não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return updated;
+    }
+
     static async patch(id, dadosParciais) {
         const updated = await PassengerRepository.patch(id, dadosParciais);
         if (!updated) {
@@ -52,6 +73,17 @@ class PassengerService {
 
     static async delete(id) {
         const deleted = await PassengerRepository.delete(id);
+        if (!deleted) {
+            const error = new Error('Passageiro não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return true;
+    }
+
+    // ✅ NOVO: Deletar pelo usuarioId
+    static async deleteByUsuarioId(usuarioId) {
+        const deleted = await PassengerRepository.deleteByUsuarioId(usuarioId);
         if (!deleted) {
             const error = new Error('Passageiro não encontrado');
             error.statusCode = 404;

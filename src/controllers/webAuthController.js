@@ -42,7 +42,14 @@ class WebAuthController {
             }
 
             const token = jwt.sign(
-                { id: user._id, login: user.login, role: user.role, tipo: user.tipo },
+                { 
+                    id: user._id, 
+                    login: user.login, 
+                    email: user.email,
+                    nome: user.nome,
+                    role: user.role, 
+                    tipo: user.tipo 
+                },
                 SECRET_KEY,
                 { expiresIn: '8h' }
             );
@@ -95,7 +102,7 @@ class WebAuthController {
                 role: 'user'
             });
 
-            // Criar perfil correspondente usando o _id do usuário
+            // ✅ CRIAR PERFIL COM A REFERÊNCIA usuarioId
             if (tipo === 'motorista') {
                 if (!modelo || !ano || !placa || !cnh) {
                     await UserService.delete(user._id);
@@ -107,7 +114,7 @@ class WebAuthController {
                 }
 
                 await DriverService.create({
-                    _id: user._id,  // ← USAR O _ID DO USUÁRIO
+                    usuarioId: user._id,     // ← REFERÊNCIA AO USER
                     nome: user.nome,
                     email: user.email,
                     telefone: '',
@@ -120,7 +127,7 @@ class WebAuthController {
                 });
             } else if (tipo === 'passageiro') {
                 await PassengerService.create({
-                    _id: user._id,  // ← USAR O _ID DO USUÁRIO
+                    usuarioId: user._id,     // ← REFERÊNCIA AO USER
                     nome: user.nome,
                     email: user.email,
                     telefone: '',

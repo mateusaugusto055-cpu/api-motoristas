@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const driverSchema = new mongoose.Schema({
+    usuarioId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        unique: true
+    },
     nome: {
         type: String,
         required: [true, 'O nome é obrigatório'],
@@ -18,36 +24,34 @@ const driverSchema = new mongoose.Schema({
     telefone: {
         type: String,
         trim: true,
-        default: '',
-        required: false
+        default: ''
     },
     cpf: {
         type: String,
         trim: true,
-        default: '',
-        required: false
+        default: ''
     },
     cnh: {
         type: String,
         trim: true,
-        required: [true, 'A CNH é obrigatória']
+        default: ''
     },
     placa: {
         type: String,
         uppercase: true,
         trim: true,
-        required: [true, 'A placa é obrigatória']
+        default: ''
     },
     modelo: {
         type: String,
         trim: true,
-        required: [true, 'O modelo é obrigatório']
+        default: ''
     },
     ano: {
         type: Number,
-        required: [true, 'O ano é obrigatório'],
         min: 1950,
-        max: new Date().getFullYear() + 1
+        max: new Date().getFullYear() + 1,
+        default: null
     },
     status: {
         type: String,

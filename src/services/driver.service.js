@@ -15,7 +15,16 @@ class DriverService {
         return driver;
     }
 
-    // ✅ NOVO MÉTODO
+    static async findByUsuarioId(usuarioId) {
+        const driver = await DriverRepository.findByUsuarioId(usuarioId);
+        if (!driver) {
+            const error = new Error('Motorista não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return driver;
+    }
+
     static async findByEmail(email) {
         const driver = await DriverRepository.findByEmail(email);
         if (!driver) {
@@ -40,6 +49,16 @@ class DriverService {
         return updated;
     }
 
+    static async updateByUsuarioId(usuarioId, driverData) {
+        const updated = await DriverRepository.updateByUsuarioId(usuarioId, driverData);
+        if (!updated) {
+            const error = new Error('Motorista não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return updated;
+    }
+
     static async patch(id, dadosParciais) {
         const updated = await DriverRepository.patch(id, dadosParciais);
         if (!updated) {
@@ -52,6 +71,16 @@ class DriverService {
 
     static async delete(id) {
         const deleted = await DriverRepository.delete(id);
+        if (!deleted) {
+            const error = new Error('Motorista não encontrado');
+            error.statusCode = 404;
+            throw error;
+        }
+        return true;
+    }
+
+    static async deleteByUsuarioId(usuarioId) {
+        const deleted = await DriverRepository.deleteByUsuarioId(usuarioId);
         if (!deleted) {
             const error = new Error('Motorista não encontrado');
             error.statusCode = 404;

@@ -13,7 +13,13 @@ class DriverRepository {
         return await Driver.findById(id);
     }
 
-    // ✅ NOVO MÉTODO
+    static async findByUsuarioId(usuarioId) {
+        if (!mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return null;
+        }
+        return await Driver.findOne({ usuarioId: usuarioId });
+    }
+
     static async findByEmail(email) {
         return await Driver.findOne({ email: email });
     }
@@ -29,6 +35,17 @@ class DriverRepository {
         return await Driver.findByIdAndUpdate(id, driverData, { new: true });
     }
 
+    static async updateByUsuarioId(usuarioId, driverData) {
+        if (!mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return null;
+        }
+        return await Driver.findOneAndUpdate(
+            { usuarioId: usuarioId },
+            driverData,
+            { new: true }
+        );
+    }
+
     static async patch(id, dadosParciais) {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return null;
@@ -41,6 +58,13 @@ class DriverRepository {
             return null;
         }
         return await Driver.findByIdAndDelete(id);
+    }
+
+    static async deleteByUsuarioId(usuarioId) {
+        if (!mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return null;
+        }
+        return await Driver.findOneAndDelete({ usuarioId: usuarioId });
     }
 }
 
