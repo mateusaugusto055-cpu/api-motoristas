@@ -1,0 +1,28 @@
+extends layouts/main.pug
+
+block content
+    .auth-container
+        h1 ✏️ Editar Perfil
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        form(action="/profile/edit", method="POST")
+            .form-group
+                label(for="nome") Nome:
+                input(type="text", name="nome", id="nome", value=user.nome, required)
+            
+            .form-group
+                label(for="email") E-mail:
+                input(type="email", name="email", id="email", value=user.email, required)
+            
+            .form-group
+                label(for="senha") Nova Senha (opcional):
+                input(type="password", name="senha", id="senha", placeholder="Deixe em branco para manter a atual")
+            
+            button.btn.btn-primary(type="submit") Salvar Alterações
+        
+        a.btn.btn-secondary(href="/profile") Voltar

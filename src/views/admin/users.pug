@@ -1,0 +1,78 @@
+extends layouts/main.pug
+
+block content
+    h1 👑 Painel Administrativo - Usuários
+    
+    if success
+        .alert.alert-success= success
+    
+    .admin-tabs
+        button.tab-btn.active(onclick="showTab('motoristas')") Motoristas
+        button.tab-btn(onclick="showTab('passageiros')") Passageiros
+        button.tab-btn(onclick="showTab('todos')") Todos
+    
+    #motoristas.tab-content.active
+        h2 Motoristas
+        if motoristas && motoristas.length > 0
+            table.admin-table
+                thead
+                    tr
+                        th Nome
+                        th Email
+                        th Status
+                        th Ações
+                tbody
+                    each driver in motoristas
+                        tr
+                            td= driver.nome
+                            td= driver.email
+                            td
+                                if driver.status === 'ativo'
+                                    span.status-active ✅ Ativo
+                                else
+                                    span.status-inactive ⛔ Suspenso
+                            td
+                                if driver.status === 'ativo'
+                                    a.btn.btn-warning(href=`/admin/users/suspend/${driver.id}`) Suspender
+                                else
+                                    a.btn.btn-success(href=`/admin/users/activate/${driver.id}`) Ativar
+                                a.btn.btn-danger(href=`/admin/users/delete/${driver.id}`) Deletar
+        else
+            p Nenhum motorista cadastrado.
+    
+    #passageiros.tab-content
+        h2 Passageiros
+        if passageiros && passageiros.length > 0
+            table.admin-table
+                thead
+                    tr
+                        th Nome
+                        th Email
+                        th Status
+                        th Ações
+                tbody
+                    each passenger in passageiros
+                        tr
+                            td= passenger.nome
+                            td= passenger.email
+                            td
+                                if passenger.status === 'ativo'
+                                    span.status-active ✅ Ativo
+                                else
+                                    span.status-inactive ⛔ Suspenso
+                            td
+                                if passenger.status === 'ativo'
+                                    a.btn.btn-warning(href=`/admin/users/suspend/${passenger.id}`) Suspender
+                                else
+                                    a.btn.btn-success(href=`/admin/users/activate/${passenger.id}`) Ativar
+                                a.btn.btn-danger(href=`/admin/users/delete/${passenger.id}`) Deletar
+        else
+            p Nenhum passageiro cadastrado.
+
+script.
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }

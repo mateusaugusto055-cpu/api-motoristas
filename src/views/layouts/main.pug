@@ -9,8 +9,16 @@ html(lang="pt-BR")
         header
             nav
                 .container
-                    h1.logo 🚗 API Motoristas de Aplicativo
+                    h1.logo 🚗 API Motoristas
                     ul.nav-links
+                        if user
+                            li: a(href="/profile") Meu Perfil
+                            li: a(href="/logout") Sair
+                        else
+                            li: a(href="/login") Login
+                            li: a(href="/register") Cadastrar
+                        if user && user.role === 'admin'
+                            li: a(href="/admin/users") Admin
                         li: a(href="/drivers-view") Motoristas
                         li: a(href="/passengers-view") Passageiros
 
@@ -19,4 +27,4 @@ html(lang="pt-BR")
 
         footer
             .container
-                p &copy; 2026 API Motoristas - Node.js, Express, PUG
+                p &copy; 2026 API Motoristas - Node.js, Express, MongoDB

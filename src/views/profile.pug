@@ -1,0 +1,49 @@
+extends layouts/main.pug
+
+block content
+    .profile-container
+        h1 👤 Meu Perfil
+        
+        if error
+            .alert.alert-error= error
+        
+        if success
+            .alert.alert-success= success
+        
+        .profile-info
+            .profile-avatar
+                if user.tipo === 'motorista'
+                    img(src="https://cdn-icons-png.flaticon.com/512/1998/1998627.png", alt="Motorista")
+                else
+                    img(src="https://cdn-icons-png.flaticon.com/512/1998/1998626.png", alt="Passageiro")
+            
+            .profile-details
+                p
+                    strong Nome: 
+                    span= user.nome
+                p
+                    strong Email: 
+                    span= user.email
+                p
+                    strong Login: 
+                    span= user.login
+                p
+                    strong Tipo: 
+                    span= user.tipo
+                p
+                    strong Status: 
+                    if user.status === 'ativo'
+                        span.status-active ✅ Ativo
+                    else
+                        span.status-inactive ⛔ Suspenso
+        
+        .profile-actions
+            a.btn.btn-secondary(href="/profile/edit") Editar Perfil
+            button.btn.btn-danger(onclick="confirmDelete()") Deletar Conta
+
+script.
+    function confirmDelete() {
+        if (confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível!')) {
+            window.location.href = '/profile/delete';
+        }
+    }
