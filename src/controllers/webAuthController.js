@@ -72,9 +72,10 @@ class WebAuthController {
 
     static async register(req, res) {
         try {
-            const { nome, email, login, senha, tipo, modelo, ano, placa, cnh } = req.body;
+            // ✅ ADICIONAR telefone NA DESESTRUTURAÇÃO
+            const { nome, email, telefone, login, senha, tipo, modelo, ano, placa, cnh } = req.body;
 
-            if (!nome || !email || !login || !senha || !tipo) {
+            if (!nome || !email || !telefone || !login || !senha || !tipo) {
                 return res.render('register', { 
                     title: 'Cadastro', 
                     error: 'Todos os campos são obrigatórios', 
@@ -91,7 +92,6 @@ class WebAuthController {
                 });
             }
 
-            // Criar usuário
             const user = await UserService.create({
                 nome,
                 email,
@@ -102,7 +102,6 @@ class WebAuthController {
                 role: 'user'
             });
 
-            // ✅ CRIAR PERFIL COM A REFERÊNCIA usuarioId
             if (tipo === 'motorista') {
                 if (!modelo || !ano || !placa || !cnh) {
                     await UserService.delete(user._id);
@@ -114,10 +113,10 @@ class WebAuthController {
                 }
 
                 await DriverService.create({
-                    usuarioId: user._id,     // ← REFERÊNCIA AO USER
+                    usuarioId: user._id,
                     nome: user.nome,
                     email: user.email,
-                    telefone: '',
+                    telefone: telefone,   // ✅ USAR telefone
                     cpf: '',
                     cnh: cnh,
                     placa: placa.toUpperCase(),
@@ -127,10 +126,10 @@ class WebAuthController {
                 });
             } else if (tipo === 'passageiro') {
                 await PassengerService.create({
-                    usuarioId: user._id,     // ← REFERÊNCIA AO USER
+                    usuarioId: user._id,
                     nome: user.nome,
                     email: user.email,
-                    telefone: '',
+                    telefone: telefone,   // ✅ USAR telefone
                     endereco: '',
                     status: 'ativo'
                 });

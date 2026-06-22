@@ -14,8 +14,10 @@ block content
             .profile-avatar
                 if user.tipo === 'motorista'
                     img(src="https://cdn-icons-png.flaticon.com/512/1998/1998627.png", alt="Motorista")
-                else
+                else if user.tipo === 'passageiro'
                     img(src="https://cdn-icons-png.flaticon.com/512/1998/1998626.png", alt="Passageiro")
+                else
+                    img(src="https://cdn-icons-png.flaticon.com/512/1998/1998625.png", alt="Admin")
             
             .profile-details
                 p
@@ -24,6 +26,21 @@ block content
                 p
                     strong Email: 
                     span= user.email
+                
+                //- ✅ MOSTRAR TELEFONE DO PERFIL CORRETO
+                if user.tipo === 'motorista' && driver
+                    p
+                        strong Telefone: 
+                        span= driver.telefone || 'Não informado'
+                else if user.tipo === 'passageiro' && passenger
+                    p
+                        strong Telefone: 
+                        span= passenger.telefone || 'Não informado'
+                else
+                    p
+                        strong Telefone: 
+                        span= user.telefone || 'Não informado'
+                
                 p
                     strong Login: 
                     span= user.login
@@ -44,6 +61,10 @@ block content
                     p
                         strong Código da Habilitação (CNH): 
                         span= driver.cnh || 'Não informado'
+                
+                if user.tipo === 'admin'
+                    p
+                        strong 👑 Administrador - Acesso total ao sistema
                 
                 p
                     strong Status: 

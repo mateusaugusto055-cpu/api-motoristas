@@ -20,6 +20,10 @@ block content
                 input(type="email", name="email", id="email", required, placeholder="seu@email.com")
             
             .form-group
+                label(for="telefone") Telefone:
+                input(type="tel", name="telefone", id="telefone", required, placeholder="(11) 99999-9999", pattern="\\(\\d{2}\\)\\s\\d{4,5}-\\d{4}")
+            
+            .form-group
                 label(for="login") Login:
                 input(type="text", name="login", id="login", required, placeholder="Escolha um login")
             
@@ -33,7 +37,7 @@ block content
                     option(value="passageiro") Passageiro
                     option(value="motorista") Motorista
             
-            //- Campos específicos para MOTORISTA (inicialmente ocultos)
+            //- Campos específicos para MOTORISTA
             #motorista-fields(style="display: none;")
                 .form-group
                     label(for="modelo") Modelo do Carro:
@@ -57,7 +61,6 @@ block content
             | Já tem uma conta? 
             a(href="/login") Faça login aqui
 
-//- O script DEVE ficar aqui, FORA do block content
 block scripts
     script.
         function toggleMotoristaFields() {

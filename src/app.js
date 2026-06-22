@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// --- IGNORAR FAVICON (SOLUÇÃO PARA O ERRO NaN) ---
+// --- IGNORAR FAVICON ---
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // --- CONFIGURAÇÃO DO PUG ---
@@ -37,24 +37,43 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Log de requisições
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
 });
 
+// ✅ MIDDLEWARE PARA CAPTURAR MENSAGENS DA URL (success/error)
+app.use((req, res, next) => {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const success = url.searchParams.get('success');
+    const error = url.searchParams.get('error');
+    
+    if (success) {
+        req.flash = { success };
+    }
+    if (error) {
+        req.flash = { error };
+    }
+    next();
+});
+
+// --- CONEXÃO COM MONGODB ---
 await connectDB();
 
+// --- MIDDLEWARE PARA DISPONIBILIZAR USUÁRIO NAS VIEWS ---
 app.use(setUserMiddleware);
 
+// --- SWAGGER ---
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// --- ROTAS API ---
+// --- ROTAS DA API (JSON) ---
 app.use('/auth', authRoutes);
 app.use('/users', authMiddleware, userRoutes);
 app.use('/drivers', authMiddleware, driverRoutes);
 app.use('/passengers', authMiddleware, passengerRoutes);
 
-// --- ROTAS WEB ---
+// --- ROTAS DA WEB (Páginas HTML) ---
 app.use('/', webAuthRoutes);
 app.use('/', webProfileRoutes);
 app.use('/', webAdminRoutes);
@@ -68,6 +87,7 @@ app.use((req, res) => {
     res.status(404).render('404', { title: 'Página não encontrada' });
 });
 
+// --- MIDDLEWARE DE ERRO GLOBAL ---
 app.use(errorHandler);
 
 export default app;

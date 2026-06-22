@@ -23,8 +23,9 @@ const passengerSchema = new mongoose.Schema({
     },
     telefone: {
         type: String,
+        required: [true, 'O telefone é obrigatório'], // ← TORNADO OBRIGATÓRIO
         trim: true,
-        default: ''
+        match: [/^\(\d{2}\)\s\d{4,5}-\d{4}$/, 'Formato inválido. Use (11) 99999-9999']
     },
     endereco: {
         type: String,

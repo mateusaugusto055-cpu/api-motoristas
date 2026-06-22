@@ -23,8 +23,9 @@ const driverSchema = new mongoose.Schema({
     },
     telefone: {
         type: String,
+        required: [true, 'O telefone é obrigatório'], // ← TORNADO OBRIGATÓRIO
         trim: true,
-        default: ''
+        match: [/^\(\d{2}\)\s\d{4,5}-\d{4}$/, 'Formato inválido. Use (11) 99999-9999']
     },
     cpf: {
         type: String,
@@ -34,24 +35,24 @@ const driverSchema = new mongoose.Schema({
     cnh: {
         type: String,
         trim: true,
-        default: ''
+        required: [true, 'A CNH é obrigatória']
     },
     placa: {
         type: String,
         uppercase: true,
         trim: true,
-        default: ''
+        required: [true, 'A placa é obrigatória']
     },
     modelo: {
         type: String,
         trim: true,
-        default: ''
+        required: [true, 'O modelo é obrigatório']
     },
     ano: {
         type: Number,
+        required: [true, 'O ano é obrigatório'],
         min: 1950,
-        max: new Date().getFullYear() + 1,
-        default: null
+        max: new Date().getFullYear() + 1
     },
     status: {
         type: String,

@@ -25,7 +25,6 @@ class WebProfileController {
             let driver = null;
             let passenger = null;
             
-            // ✅ BUSCAR PELO usuarioId (REFERÊNCIA)
             if (user.tipo === 'motorista') {
                 driver = await DriverService.findByUsuarioId(userId);
                 console.log('🔍 Motorista encontrado:', driver ? 'SIM' : 'NÃO');
@@ -34,6 +33,7 @@ class WebProfileController {
                 console.log('🔍 Passageiro encontrado:', passenger ? 'SIM' : 'NÃO');
             }
             
+            // ✅ AQUI ESTÁ O res.render COMPLETO
             res.render('profile', { 
                 title: 'Meu Perfil', 
                 user, 

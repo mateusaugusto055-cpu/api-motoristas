@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     tipo: {
         type: String,
-        enum: ['motorista', 'passageiro'],
+        enum: ['motorista', 'passageiro', 'admin'],
         required: true
     },
     status: {

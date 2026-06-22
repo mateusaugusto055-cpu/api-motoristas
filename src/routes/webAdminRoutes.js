@@ -5,12 +5,15 @@ import { authorize } from '../middlewares/permission.middleware.js';
 
 const router = Router();
 
+// Todas as rotas exigem autenticação e papel de admin
 router.use(authMiddleware);
 router.use(authorize('admin'));
 
+// Página do painel admin
 router.get('/admin/users', WebAdminController.adminPage);
-router.get('/admin/users/suspend/:id', WebAdminController.suspendUser);
-router.get('/admin/users/activate/:id', WebAdminController.activateUser);
-router.get('/admin/users/delete/:id', WebAdminController.deleteUser);
+
+// ✅ ROTAS DE EXCLUSÃO
+router.post('/admin/delete/motorista/:id', WebAdminController.deleteDriver);
+router.post('/admin/delete/passageiro/:id', WebAdminController.deletePassenger);
 
 export default router;
