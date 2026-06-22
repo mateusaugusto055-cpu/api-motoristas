@@ -29,12 +29,50 @@ block content
             
             .form-group
                 label(for="tipo") Tipo de usuário:
-                select(name="tipo", id="tipo", required)
-                    option(value="motorista") Motorista
+                select(name="tipo", id="tipo", required, onchange="toggleMotoristaFields()")
                     option(value="passageiro") Passageiro
+                    option(value="motorista") Motorista
+            
+            //- Campos específicos para MOTORISTA (inicialmente ocultos)
+            #motorista-fields(style="display: none;")
+                .form-group
+                    label(for="modelo") Modelo do Carro:
+                    input(type="text", name="modelo", id="modelo", placeholder="Ex: Fiat Argo, Chevrolet Onix")
+                
+                .form-group
+                    label(for="ano") Ano do Carro:
+                    input(type="number", name="ano", id="ano", placeholder="Ex: 2022", min="1950", max="2025")
+                
+                .form-group
+                    label(for="placa") Placa do Carro:
+                    input(type="text", name="placa", id="placa", placeholder="Ex: ABC-1234", style="text-transform: uppercase;")
+                
+                .form-group
+                    label(for="cnh") Código da Habilitação (CNH):
+                    input(type="text", name="cnh", id="cnh", placeholder="Ex: 12345678901")
             
             button.btn.btn-primary(type="submit") Cadastrar
         
         p
             | Já tem uma conta? 
             a(href="/login") Faça login aqui
+
+script.
+    function toggleMotoristaFields() {
+        const tipo = document.getElementById('tipo').value;
+        const fields = document.getElementById('motorista-fields');
+        if (tipo === 'motorista') {
+            fields.style.display = 'block';
+            // Tornar campos obrigatórios
+            document.getElementById('modelo').required = true;
+            document.getElementById('ano').required = true;
+            document.getElementById('placa').required = true;
+            document.getElementById('cnh').required = true;
+        } else {
+            fields.style.display = 'none';
+            document.getElementById('modelo').required = false;
+            document.getElementById('ano').required = false;
+            document.getElementById('placa').required = false;
+            document.getElementById('cnh').required = false;
+        }
+    }

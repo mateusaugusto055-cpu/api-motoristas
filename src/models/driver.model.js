@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const driverSchema = new mongoose.Schema({
+    id: {
+        type: Number,
+        unique: true,
+        sparse: true
+    },
     nome: {
         type: String,
         required: [true, 'O nome é obrigatório'],
@@ -17,31 +22,35 @@ const driverSchema = new mongoose.Schema({
     },
     telefone: {
         type: String,
-        required: [true, 'O telefone é obrigatório'],
-        trim: true
+        trim: true,
+        default: ''
     },
     cpf: {
         type: String,
-        required: [true, 'O CPF é obrigatório'],
-        unique: true,
-        trim: true
+        trim: true,
+        default: ''
     },
     cnh: {
         type: String,
-        required: [true, 'A CNH é obrigatória'],
-        unique: true,
-        trim: true
+        trim: true,
+        default: ''
     },
     placa: {
         type: String,
-        required: [true, 'A placa é obrigatória'],
         uppercase: true,
-        trim: true
+        trim: true,
+        default: ''
     },
     modelo: {
         type: String,
-        required: [true, 'O modelo é obrigatório'],
-        trim: true
+        trim: true,
+        default: ''
+    },
+    ano: {
+        type: Number,
+        min: 1950,
+        max: new Date().getFullYear() + 1,
+        default: null
     },
     status: {
         type: String,
@@ -49,7 +58,7 @@ const driverSchema = new mongoose.Schema({
         default: 'ativo'
     }
 }, {
-    timestamps: true // Cria createdAt e updatedAt automaticamente
+    timestamps: true
 });
 
 export default mongoose.model('Driver', driverSchema);

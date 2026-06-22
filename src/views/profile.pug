@@ -30,6 +30,21 @@ block content
                 p
                     strong Tipo: 
                     span= user.tipo
+                
+                if user.tipo === 'motorista' && driver
+                    p
+                        strong Modelo do Carro: 
+                        span= driver.modelo || 'Não informado'
+                    p
+                        strong Ano do Carro: 
+                        span= driver.ano || 'Não informado'
+                    p
+                        strong Placa: 
+                        span= driver.placa || 'Não informado'
+                    p
+                        strong Código da Habilitação (CNH): 
+                        span= driver.cnh || 'Não informado'
+                
                 p
                     strong Status: 
                     if user.status === 'ativo'

@@ -41,7 +41,6 @@ class WebAuthController {
                 { expiresIn: '8h' }
             );
 
-            // Salvar na sessão (cookie)
             res.cookie('token', token, { httpOnly: true, maxAge: 8 * 60 * 60 * 1000 });
             res.redirect('/profile');
         } catch (error) {
@@ -61,7 +60,7 @@ class WebAuthController {
     // Processar cadastro
     static async register(req, res) {
         try {
-            const { nome, email, login, senha, tipo } = req.body;
+            const { nome, email, login, senha, tipo, modelo, ano, placa, cnh } = req.body;
 
             // Verificar se login já existe
             const existingUser = await UserService.findByLogin(login);
@@ -80,20 +79,33 @@ class WebAuthController {
                 login,
                 senha,
                 tipo,
-                status: 'ativo'
+                status: 'ativo',
+                role: 'user'
             });
 
-            // Criar perfil correspondente (motorista ou passageiro)
+            // Criar perfil correspondente
             if (tipo === 'motorista') {
+                // Validar campos obrigatórios para motorista
+                if (!modelo || !ano || !placa || !cnh) {
+                    // Se faltar dados, deletar o usuário criado e mostrar erro
+                    await UserService.delete(user._id);
+                    return res.render('register', {
+                        title: 'Cadastro',
+                        error: 'Todos os campos do motorista são obrigatórios: Modelo, Ano, Placa e CNH',
+                        success: null
+                    });
+                }
+
                 await DriverService.create({
                     id: user._id,
                     nome: user.nome,
                     email: user.email,
                     telefone: '',
                     cpf: '',
-                    cnh: '',
-                    placa: '',
-                    modelo: '',
+                    cnh: cnh,
+                    placa: placa.toUpperCase(),
+                    modelo: modelo,
+                    ano: parseInt(ano),
                     status: 'ativo'
                 });
             } else if (tipo === 'passageiro') {
@@ -113,9 +125,10 @@ class WebAuthController {
                 success: 'Cadastro realizado com sucesso! Faça login.' 
             });
         } catch (error) {
+            console.error('Erro no cadastro:', error);
             res.render('register', { 
                 title: 'Cadastro', 
-                error: 'Erro ao cadastrar usuário', 
+                error: 'Erro ao cadastrar usuário: ' + error.message, 
                 success: null 
             });
         }

@@ -23,6 +23,24 @@ block content
                 label(for="senha") Nova Senha (opcional):
                 input(type="password", name="senha", id="senha", placeholder="Deixe em branco para manter a atual")
             
+            if user.tipo === 'motorista' && driver
+                h2 Dados do Veículo
+                .form-group
+                    label(for="modelo") Modelo do Carro:
+                    input(type="text", name="modelo", id="modelo", value=driver.modelo || '')
+                
+                .form-group
+                    label(for="ano") Ano do Carro:
+                    input(type="number", name="ano", id="ano", value=driver.ano || '', min="1950", max="2025")
+                
+                .form-group
+                    label(for="placa") Placa:
+                    input(type="text", name="placa", id="placa", value=driver.placa || '', style="text-transform: uppercase;")
+                
+                .form-group
+                    label(for="cnh") Código da Habilitação (CNH):
+                    input(type="text", name="cnh", id="cnh", value=driver.cnh || '')
+            
             button.btn.btn-primary(type="submit") Salvar Alterações
         
         a.btn.btn-secondary(href="/profile") Voltar
